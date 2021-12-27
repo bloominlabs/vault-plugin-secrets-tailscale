@@ -78,6 +78,5 @@ func (b *backend) pathCredsRead(ctx context.Context, req *logical.Request, d *fr
 	})
 	resp.Secret.TTL = lease.TTL
 	resp.Secret.MaxTTL = lease.MaxTTL
-	resp.Secret.Renewable = false
 	return resp, nil
 }

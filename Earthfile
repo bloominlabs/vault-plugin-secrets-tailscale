@@ -18,7 +18,8 @@ build:
 test:
     FROM +deps
     COPY *.go .
-    RUN --secret TEST_tailscale_TOKEN CGO_ENABLED=0 go test github.com/bloominlabs/vault-plugin-secrets-tailscale
+    ARG TEST_TAILSCALE_TAILNET=bloominlabs
+    RUN --secret TEST_TAILSCALE_TOKEN TEST_TAILSCALE_TAILNET=$TEST_TAILSCALE_TAILNET CGO_ENABLED=0 go test github.com/bloominlabs/vault-plugin-secrets-tailscale
 
 dev:
   BUILD +build

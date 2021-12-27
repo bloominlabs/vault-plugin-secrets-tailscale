@@ -2,6 +2,7 @@ package tailscale
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/errwrap"
 	"github.com/hashicorp/vault/sdk/framework"
@@ -67,7 +68,9 @@ func (b *backend) pathConfigTokenRead(ctx context.Context, req *logical.Request,
 		return nil, err
 	}
 	if conf == nil {
-		return logical.ErrorResponse("configuration does not exist. did you configure 'config/token'?"), nil
+		return logical.ErrorResponse(
+			fmt.Sprintf("configuration does not exist. did you configure '%s'?", configRootKey),
+		), nil
 	}
 
 	return &logical.Response{
@@ -118,8 +121,8 @@ func (b *backend) pathConfigTokenDelete(ctx context.Context, req *logical.Reques
 }
 
 type rootTokenConfig struct {
-	Token   string `json:"token"`
-	Tailnet string `json:"tailnet"`
+	Token   string `json:"token,omitempty"`
+	Tailnet string `json:"tailnet,omitempty"`
 }
 
 const pathConfigTokenHelpSyn = `

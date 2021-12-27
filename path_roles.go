@@ -111,7 +111,7 @@ func (b *backend) pathRolesWrite(ctx context.Context, req *logical.Request, d *f
 		if len(capabilities) > 0 {
 			capabilities, err = compactJSON(capabilities)
 			if err != nil {
-				return logical.ErrorResponse(fmt.Sprintf("cannot parse policy document: %q", capabilitiesRaw.(string))), nil
+				return logical.ErrorResponse(fmt.Sprintf("cannot parse capabilities: %q", capabilitiesRaw.(string))), nil
 			}
 		}
 		roleEntry.Capabilities = capabilities

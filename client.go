@@ -46,7 +46,7 @@ type CreateAPIRequest struct {
 
 type CreateAPIKeyResponse struct {
 	ID           string       `json:"id"`
-	Key          string       `json:"key"`
+	Key          string       `json:"key,omitempty"`
 	Created      string       `json:"created"`
 	Expires      string       `json:"expires"`
 	Capabilities Capabilities `json:"capabilities"`
@@ -96,6 +96,28 @@ func (c *Client) createAPIKey(ctx context.Context, capabilities Capabilities) (*
 	}
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to create rotate-secret request. err %s", err))
+	}
+	resp, err := c.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var decodedResponse CreateAPIKeyResponse
+	err = json.NewDecoder(resp.Body).Decode(&decodedResponse)
+	if err != nil {
+		return nil, errwrap.Wrapf("fail to decode rotate secret response body: {{err}}", err)
+	}
+
+	return &decodedResponse, nil
+}
+
+func (c *Client) getAPIKey(ctx context.Context, keyID string) (*CreateAPIKeyResponse, error) {
+	url := fmt.Sprintf("%s/api/v2/tailnet/%s/keys/%s", c.BaseURL, c.Tailnet, keyID)
+
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to create rotate-secret request. err %s", err))
 	}

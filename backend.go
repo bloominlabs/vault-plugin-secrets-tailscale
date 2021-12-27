@@ -69,7 +69,7 @@ const backendHelp = `
   as configurable TTL update to 90 days.
 
 	After mounting this backend, a root token (with the ability to generate
-	tokens) must be configured with the 'config/token' path and policies must
+	tokens) must be configured with the 'config/root' path and policies must
 	be written using the "roles/" endpoints before any access keys can be
 	generated.
 `
