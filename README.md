@@ -23,12 +23,10 @@ revocation of [Tailscale][tailscale] API tokens.
 # NOTE: this policy will not work and is just an example
 vault write /tailscale/roles/<role-name> capabilities=-<<EOF
 {
-	"capabilities": {
-    "devices": {
-      "create": {
-        "reusable": false,
-        "ephemeral": false
-      }
+  "devices": {
+    "create": {
+      "reusable": false,
+      "ephemeral": false
     }
   }
 }

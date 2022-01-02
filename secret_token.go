@@ -3,6 +3,7 @@ package tailscale
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
@@ -24,10 +25,40 @@ func secretToken(b *backend) *framework.Secret {
 				Type:        framework.TypeString,
 				Description: "ID of the API Token",
 			},
+			"expires": &framework.FieldSchema{
+				Type:        framework.TypeString,
+				Description: "Date the token expires",
+			},
 		},
 
 		Revoke: b.secretTokenRevoke,
+		Renew:  b.secretTokenRenew,
 	}
+}
+
+func (b *backend) secretTokenRenew(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
+	lease, err := b.LeaseConfig(ctx, req.Storage)
+	if err != nil {
+		return nil, err
+	}
+	if lease == nil {
+		lease = &configLease{}
+	}
+
+	expires, ok := req.Secret.InternalData["expires"]
+	if !ok {
+		return nil, fmt.Errorf("expiration time is missing on the lease")
+	}
+
+	expirationDate, err := time.Parse(time.RFC3339, expires.(string))
+	if err != nil {
+		return logical.ErrorResponse("failed to parse expiration date. err: %s", err), nil
+	}
+
+	resp := &logical.Response{Secret: req.Secret}
+	resp.Secret.TTL = lease.TTL
+	resp.Secret.MaxTTL = expirationDate.Sub(time.Now())
+	return resp, nil
 }
 
 func (b *backend) secretTokenRevoke(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {

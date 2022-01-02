@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
@@ -61,9 +62,18 @@ func (b *backend) pathCredsRead(ctx context.Context, req *logical.Request, d *fr
 		lease = &configLease{}
 	}
 
+	ttl, _, err := framework.CalculateTTL(b.System(), 0, lease.TTL, 0, lease.MaxTTL, 0, time.Time{})
+	if err != nil {
+		return logical.ErrorResponse("failed to calculate ttl. err: %w", err), nil
+	}
+
 	createdToken, err := c.createAPIKey(ctx, capabilities)
 	if err != nil {
 		return logical.ErrorResponse("failed to create token. err: %s", err), nil
+	}
+	expires, err := time.Parse(time.RFC3339, createdToken.Expires)
+	if err != nil {
+		return logical.ErrorResponse("failed to parse expiration date. err: %s", err), nil
 	}
 
 	// Use the helper to create the secret
@@ -73,10 +83,11 @@ func (b *backend) pathCredsRead(ctx context.Context, req *logical.Request, d *fr
 		"expires":      createdToken.Expires,
 		"capabilities": roleEntry.Capabilities,
 	}, map[string]interface{}{
-		"id":    createdToken.ID,
-		"token": createdToken.Key,
+		"id":      createdToken.ID,
+		"token":   createdToken.Key,
+		"expires": createdToken.Expires,
 	})
-	resp.Secret.TTL = lease.TTL
-	resp.Secret.MaxTTL = lease.MaxTTL
+	resp.Secret.TTL = ttl
+	resp.Secret.MaxTTL = expires.Sub(time.Now())
 	return resp, nil
 }
