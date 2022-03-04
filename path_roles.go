@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/davidsbond/tailscale-client-go/tailscale"
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
 )
@@ -107,12 +108,15 @@ func (b *backend) pathRolesWrite(ctx context.Context, req *logical.Request, d *f
 	}
 
 	if capabilitiesRaw, ok := d.GetOk("capabilities"); ok {
-		capabilities := d.Get("capabilities").(string)
-		if len(capabilities) > 0 {
-			capabilities, err = compactJSON(capabilities)
-			if err != nil {
-				return logical.ErrorResponse(fmt.Sprintf("cannot parse capabilities: %q", capabilitiesRaw.(string))), nil
-			}
+		var capabilities tailscale.KeyCapabilities
+		s, ok := d.Get("capabilities").(string)
+		if ok != true {
+			return logical.ErrorResponse(fmt.Sprintf("cannot parse capabilities: %q", capabilitiesRaw.(string))), nil
+		}
+
+		err := json.Unmarshal([]byte(s), &capabilities)
+		if err != nil {
+			return logical.ErrorResponse(fmt.Sprintf("cannot parse capabilities: %q", capabilitiesRaw.(string))), nil
 		}
 		roleEntry.Capabilities = capabilities
 	}
@@ -163,7 +167,7 @@ func (b *backend) roleRead(ctx context.Context, s logical.Storage, roleName stri
 }
 
 type tailscaleRoleEntry struct {
-	Capabilities string `json:"capabilities"` // JSON-serialized capabilities to attach to tokens.
+	Capabilities tailscale.KeyCapabilities `json:"capabilities"` // JSON-serialized capabilities to attach to tokens.
 }
 
 func compactJSON(input string) (string, error) {

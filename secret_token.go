@@ -76,9 +76,9 @@ func (b *backend) secretTokenRevoke(ctx context.Context, req *logical.Request, d
 	}
 
 	b.Logger().Info(fmt.Sprintf("Revoking tailscale token (%s)...", id))
-	err = c.deleteAPIKey(ctx, id.(string))
+	err = c.DeleteKey(ctx, id.(string))
 	if err != nil {
-		return logical.ErrorResponse(fmt.Sprintf("failed to revoke cloudflare token (%s). err: %s", id, err)), nil
+		return logical.ErrorResponse(fmt.Sprintf("failed to revoke tailscale token (%s). err: %s", id, err)), nil
 	}
 
 	return nil, nil

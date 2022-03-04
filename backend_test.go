@@ -7,6 +7,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/davidsbond/tailscale-client-go/tailscale"
 	"github.com/hashicorp/vault/sdk/logical"
 	"github.com/stretchr/testify/assert"
 )
@@ -106,9 +107,14 @@ func TestBackend_roles(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	compactedValidPolicy, err := compactJSON(validTailscaleCapability)
-	if err != nil {
-		t.Fatal(err)
+	parsedValidPolicy := map[string]interface{}{
+		"devices": map[string]interface{}{
+			"create": map[string]interface{}{
+				"reusable":  false,
+				"ephemeral": false,
+				"tags":      nil,
+			},
+		},
 	}
 
 	testCases := []struct {
@@ -120,13 +126,13 @@ func TestBackend_roles(t *testing.T) {
 		{
 			"succeedsWithNilPolicyDocument",
 			nil,
-			map[string]interface{}{"capabilities": ""},
+			map[string]interface{}{"capabilities": parsedValidPolicy},
 			nil,
 		},
 		{
-			"succeedsWithMissingPolicyDocument",
+			"failsWithMissingPolicyDocument",
 			map[string]interface{}{"capabilities": ""},
-			map[string]interface{}{"capabilities": ""},
+			map[string]interface{}{"error": "cannot parse capabilities: \"\""},
 			nil,
 		},
 		{
@@ -143,16 +149,10 @@ func TestBackend_roles(t *testing.T) {
 		// 	nil,
 		// },
 		{
-			"succeedsWithValidJSONCapabilities",
-			map[string]interface{}{"capabilities": `[{"test": "test"}]`},
-			map[string]interface{}{"capabilities": `[{"test":"test"}]`},
-			map[string]interface{}{"capabilities": `[{"test":"test"}]`},
-		},
-		{
 			"succeedsWithValidCapability",
 			map[string]interface{}{"capabilities": validTailscaleCapability},
-			map[string]interface{}{"capabilities": compactedValidPolicy},
-			map[string]interface{}{"capabilities": compactedValidPolicy},
+			map[string]interface{}{"capabilities": parsedValidPolicy},
+			map[string]interface{}{"capabilities": parsedValidPolicy},
 		},
 	}
 
@@ -209,12 +209,12 @@ func TestBackend_creds_create(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var validCapabilties Capabilities
+	var validCapabilties tailscale.KeyCapabilities
 	err = json.Unmarshal([]byte(validPolicy), &validCapabilties)
 
 	testCases := []struct {
 		name               string
-		capabilities       *Capabilities
+		capabilities       *tailscale.KeyCapabilities
 		credsData          map[string]interface{}
 		expectedCredsError map[string]interface{}
 	}{
@@ -290,7 +290,7 @@ func TestBackend_creds_create(t *testing.T) {
 			tokenID, ok := resp.Data["id"].(string)
 			if ok {
 				defer func() {
-					err := c.deleteAPIKey(context.TODO(), tokenID)
+					err := c.DeleteKey(context.TODO(), tokenID)
 					if err != nil {
 						t.Fatalf("failed to delete token '%s'. be sure it deleted in cloudflare", tokenID)
 					}
@@ -302,7 +302,7 @@ func TestBackend_creds_create(t *testing.T) {
 				return
 			}
 
-			createdToken, err := c.getAPIKey(context.TODO(), tokenID)
+			createdToken, err := c.GetKey(context.TODO(), tokenID)
 			if err != nil {
 				t.Fatalf("failed to get token '%s'. err: %s", tokenID, err)
 			}
