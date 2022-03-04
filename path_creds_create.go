@@ -15,7 +15,7 @@ func pathCredsCreate(b *backend) *framework.Path {
 		Fields: map[string]*framework.FieldSchema{
 			"role": &framework.FieldSchema{
 				Type:        framework.TypeString,
-				Description: "Create a cloudflare token from a Vault role",
+				Description: "Create a tailscale token from a Vault role",
 			},
 		},
 

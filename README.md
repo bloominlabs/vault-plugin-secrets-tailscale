@@ -71,9 +71,7 @@ $ earthly +build
 
 # execute integration tests
 #
-# use https://developers.cloudflare.com/api/tokens/create to create a token
-# with 'User:API Tokens:Edit' permissions
-$ TEST_CLOUDFLARE_TOKEN=<YOUR_CLOUDFLARE_TOKEN> earthly --secret TEST_CLOUDFLARE_TOKEN +test
+$ TEST_TAILSCALE_TOKEN=<YOUR_TAILSCALE_API_TOKEN> TEST_TAILSCALE_DOMAIN=<YOUR_DOMAIN> earthly --secret TEST_TAILSCALE_TOKEN --secret TEST_TAILSCALE_DOMAIN +test
 
 # start vault and enable the plugin locally
 earthly +dev

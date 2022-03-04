@@ -224,14 +224,6 @@ func TestBackend_creds_create(t *testing.T) {
 			nil,
 			nil,
 		},
-		// TODO: add test for applying conditions to the api token
-		//       https://api.cloudflare.com/#user-api-tokens-create-token
-		// {
-		// 	"succeedsWithValidPolicyDocument",
-		// 	map[string]interface{}{"capabilities": validPolicy},
-		// 	nil,
-		// 	nil,
-		// },
 	}
 
 	for _, testCase := range testCases {
@@ -292,7 +284,7 @@ func TestBackend_creds_create(t *testing.T) {
 				defer func() {
 					err := c.DeleteKey(context.TODO(), tokenID)
 					if err != nil {
-						t.Fatalf("failed to delete token '%s'. be sure it deleted in cloudflare", tokenID)
+						t.Fatalf("failed to delete token '%s'. be sure it deleted in tailscale", tokenID)
 					}
 				}()
 			}
