@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/davidsbond/tailscale-client-go/tailscale"
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
 )
@@ -78,6 +79,11 @@ func (b *backend) secretTokenRevoke(ctx context.Context, req *logical.Request, d
 	b.Logger().Info(fmt.Sprintf("Revoking tailscale token (%s)...", id))
 	err = c.DeleteKey(ctx, id.(string))
 	if err != nil {
+		// if we get 404 on deleting key, it is already deleted and we can ignore it
+		if tailscale.IsNotFound(err) {
+			return nil, nil
+		}
+
 		return logical.ErrorResponse(fmt.Sprintf("failed to revoke tailscale token (%s). err: %s", id, err)), nil
 	}
 
