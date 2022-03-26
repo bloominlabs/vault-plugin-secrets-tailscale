@@ -111,12 +111,12 @@ func (b *backend) pathRolesWrite(ctx context.Context, req *logical.Request, d *f
 		var capabilities tailscale.KeyCapabilities
 		s, ok := d.Get("capabilities").(string)
 		if ok != true {
-			return logical.ErrorResponse(fmt.Sprintf("cannot parse capabilities: %q", capabilitiesRaw.(string))), nil
+			return logical.ErrorResponse(fmt.Sprintf("cannot parse capabilities. raw: %q, err: %s", capabilitiesRaw.(string), err)), nil
 		}
 
 		err := json.Unmarshal([]byte(s), &capabilities)
 		if err != nil {
-			return logical.ErrorResponse(fmt.Sprintf("cannot parse capabilities: %q", capabilitiesRaw.(string))), nil
+			return logical.ErrorResponse(fmt.Sprintf("cannot parse capabilities. raw: %q, err: %s", capabilitiesRaw.(string), err)), nil
 		}
 		roleEntry.Capabilities = capabilities
 	}
