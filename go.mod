@@ -3,12 +3,12 @@ module github.com/bloominlabs/vault-plugin-secrets-tailscale
 go 1.17
 
 require (
-	github.com/davidsbond/tailscale-client-go v1.2.2
+	github.com/davidsbond/tailscale-client-go v1.5.0
 	github.com/hashicorp/errwrap v1.1.0
 	github.com/hashicorp/go-hclog v1.2.0
 	github.com/hashicorp/vault/api v1.4.1
 	github.com/hashicorp/vault/sdk v0.4.1
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.7.4
 )
 
 require (
@@ -48,7 +48,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
-	github.com/tailscale/hujson v0.0.0-20211215203138-ffd971c5f362 // indirect
+	github.com/tailscale/hujson v0.0.0-20220506213045-af5ed07155e5 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
@@ -59,5 +59,5 @@ require (
 	google.golang.org/grpc v1.44.0 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
