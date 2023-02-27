@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/davidsbond/tailscale-client-go/tailscale"
+	"github.com/tailscale/tailscale-client-go/tailscale"
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
 )
