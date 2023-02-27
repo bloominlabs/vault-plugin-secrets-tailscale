@@ -7,9 +7,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/tailscale/tailscale-client-go/tailscale"
 	"github.com/hashicorp/vault/sdk/logical"
 	"github.com/stretchr/testify/assert"
+	"github.com/tailscale/tailscale-client-go/tailscale"
 )
 
 func TestBackend_config_token(t *testing.T) {
@@ -110,9 +110,10 @@ func TestBackend_roles(t *testing.T) {
 	parsedValidPolicy := map[string]interface{}{
 		"devices": map[string]interface{}{
 			"create": map[string]interface{}{
-				"reusable":  false,
-				"ephemeral": false,
-				"tags":      nil,
+				"reusable":      false,
+				"ephemeral":     false,
+				"tags":          nil,
+				"preauthorized": false,
 			},
 		},
 	}
@@ -132,13 +133,13 @@ func TestBackend_roles(t *testing.T) {
 		{
 			"failsWithMissingPolicyDocument",
 			map[string]interface{}{"capabilities": ""},
-			map[string]interface{}{"error": "cannot parse capabilities: \"\""},
+			map[string]interface{}{"error": "cannot parse capabilities. raw: \"\", err: unexpected end of JSON input"},
 			nil,
 		},
 		{
 			"failsWithInvalidJSONPolicyDocument",
 			map[string]interface{}{"capabilities": "{'}"},
-			map[string]interface{}{"error": "cannot parse capabilities: \"{'}\""},
+			map[string]interface{}{"error": "cannot parse capabilities. raw: \"{'}\", err: invalid character '\\'' looking for beginning of object key string"},
 			nil,
 		},
 		// TODO: add more validation to the parsed struct
