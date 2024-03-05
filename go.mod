@@ -7,7 +7,7 @@ require (
 	github.com/hashicorp/go-hclog v1.6.2
 	github.com/hashicorp/vault/api v1.12.0
 	github.com/hashicorp/vault/sdk v0.11.0
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	github.com/tailscale/tailscale-client-go v1.16.0
 )
 
