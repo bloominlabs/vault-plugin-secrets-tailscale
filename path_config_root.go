@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/errwrap"
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
 )
@@ -15,13 +14,21 @@ func pathConfigToken(b *backend) *framework.Path {
 	return &framework.Path{
 		Pattern: configRootKey,
 		Fields: map[string]*framework.FieldSchema{
-			"tailnet": &framework.FieldSchema{
+			"tailnet": {
 				Type:        framework.TypeString,
 				Description: "tailnet to make API request on behalf of",
 			},
-			"token": &framework.FieldSchema{
+			"token": {
 				Type:        framework.TypeString,
 				Description: "token to authenticate API requests",
+			},
+			"client_id": {
+				Type:        framework.TypeString,
+				Description: "Tailscale OAuth Client ID with the 'devices' scope. Preferred over 'token' if both are specified",
+			},
+			"client_secret": {
+				Type:        framework.TypeString,
+				Description: "Tailscale OAuth Client Secret with the 'devices' scope. Preferred over 'token' if both are specified",
 			},
 		},
 
@@ -56,7 +63,7 @@ func (b *backend) readConfigToken(ctx context.Context, storage logical.Storage) 
 
 	conf := &rootTokenConfig{}
 	if err := entry.DecodeJSON(conf); err != nil {
-		return nil, errwrap.Wrapf("error reading nomad access configuration: {{err}}", err)
+		return nil, fmt.Errorf("error reading nomad access configuration: %w", err)
 	}
 
 	return conf, nil
@@ -75,8 +82,10 @@ func (b *backend) pathConfigTokenRead(ctx context.Context, req *logical.Request,
 
 	return &logical.Response{
 		Data: map[string]interface{}{
-			"tailnet": conf.Tailnet,
-			"token":   conf.Token,
+			"tailnet":       conf.Tailnet,
+			"token":         conf.Token,
+			"client_id":     conf.ClientID,
+			"client_secret": conf.ClientSecret,
 		},
 	}, nil
 }
@@ -90,17 +99,28 @@ func (b *backend) pathConfigTokenWrite(ctx context.Context, req *logical.Request
 		conf = &rootTokenConfig{}
 	}
 
-	token, ok := data.GetOk("token")
-	if !ok {
-		return logical.ErrorResponse("Missing 'token' in configuration request"), nil
-	}
-	conf.Token = token.(string)
-
 	tailnet, ok := data.GetOk("tailnet")
 	if !ok {
 		return logical.ErrorResponse("Missing 'tailnet' in configuration request"), nil
 	}
 	conf.Tailnet = tailnet.(string)
+
+	clientID, clientIDOK := data.GetOk("client_id")
+	clientSecret, clientSecretOK := data.GetOk("client_secret")
+	token, tokenOk := data.GetOk("token")
+
+	if !clientIDOK || !clientSecretOK || !ok {
+		return logical.ErrorResponse("Must have one of 'client_id' and 'client_secret' or 'token'"), nil
+	}
+	if tokenOk {
+		conf.Token = token.(string)
+	}
+	if clientIDOK {
+		conf.ClientID = clientID.(string)
+	}
+	if clientSecretOK {
+		conf.ClientSecret = clientSecret.(string)
+	}
 
 	entry, err := logical.StorageEntryJSON(configRootKey, conf)
 	if err != nil {
@@ -121,8 +141,10 @@ func (b *backend) pathConfigTokenDelete(ctx context.Context, req *logical.Reques
 }
 
 type rootTokenConfig struct {
-	Token   string `json:"token,omitempty"`
-	Tailnet string `json:"tailnet,omitempty"`
+	Token        string `json:"token,omitempty"`
+	Tailnet      string `json:"tailnet,omitempty"`
+	ClientID     string `json:"client_id,omitempty"`
+	ClientSecret string `json:"client_secret,omitempty"`
 }
 
 const pathConfigTokenHelpSyn = `

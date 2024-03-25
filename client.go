@@ -3,8 +3,8 @@ package tailscale
 import (
 	"context"
 
-	"github.com/tailscale/tailscale-client-go/tailscale"
 	"github.com/hashicorp/vault/sdk/logical"
+	"github.com/tailscale/tailscale-client-go/tailscale"
 )
 
 func (b *backend) client(ctx context.Context, s logical.Storage) (*tailscale.Client, error) {
@@ -13,5 +13,10 @@ func (b *backend) client(ctx context.Context, s logical.Storage) (*tailscale.Cli
 		return nil, err
 	}
 
-	return tailscale.NewClient(conf.Token, conf.Tailnet)
+	options := []tailscale.ClientOption{}
+	if conf.ClientID != "" && conf.ClientSecret != "" {
+		options = []tailscale.ClientOption{tailscale.WithOAuthClientCredentials(conf.ClientID, conf.ClientSecret, []string{"devices"})}
+	}
+
+	return tailscale.NewClient(conf.Token, conf.Tailnet, options...)
 }
