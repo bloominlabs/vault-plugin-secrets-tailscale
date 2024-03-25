@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/tailscale/tailscale-client-go/tailscale"
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
+	"tailscale.com/client/tailscale"
 )
 
 func pathListRoles(b *backend) *framework.Path {

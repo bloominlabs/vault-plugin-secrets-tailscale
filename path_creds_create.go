@@ -56,23 +56,23 @@ func (b *backend) pathCredsRead(ctx context.Context, req *logical.Request, d *fr
 		return logical.ErrorResponse("failed to calculate ttl. err: %w", err), nil
 	}
 
-	createdToken, err := c.CreateKey(ctx, roleEntry.Capabilities)
+	secret, metadata, err := c.CreateKey(ctx, roleEntry.Capabilities)
 	if err != nil {
 		return logical.ErrorResponse("failed to create token. err: %s", err), nil
 	}
 
 	// Use the helper to create the secret
 	resp := b.Secret(SecretTokenType).Response(map[string]interface{}{
-		"id":           createdToken.ID,
-		"token":        createdToken.Key,
-		"expires":      createdToken.Expires,
+		"id":           metadata.ID,
+		"token":        secret,
+		"expires":      metadata.Expires,
 		"capabilities": roleEntry.Capabilities,
 	}, map[string]interface{}{
-		"id":      createdToken.ID,
-		"token":   createdToken.Key,
-		"expires": createdToken.Expires,
+		"id":      metadata.ID,
+		"token":   secret,
+		"expires": metadata.Expires,
 	})
 	resp.Secret.TTL = ttl
-	resp.Secret.MaxTTL = createdToken.Expires.Sub(time.Now())
+	resp.Secret.MaxTTL = metadata.Expires.Sub(time.Now())
 	return resp, nil
 }
