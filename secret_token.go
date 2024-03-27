@@ -76,6 +76,12 @@ func (b *backend) secretTokenRevoke(ctx context.Context, req *logical.Request, d
 		return nil, fmt.Errorf("id is missing on the lease")
 	}
 
+	if id.(string) == "" {
+		b.Logger().Info("Revoke request for oauth generated api key. skipping...")
+
+		return nil, nil
+	}
+
 	b.Logger().Info(fmt.Sprintf("Revoking tailscale token (%s)...", id))
 	err = c.DeleteKey(ctx, id.(string))
 	if err != nil {

@@ -42,6 +42,10 @@ func pathRoles(b *backend) *framework.Path {
         inherit
         (https://github.com/tailscale/tailscale/blob/main/api.md#post-apiv2tailnettailnetkeys---create-a-new-key-for-a-tailnet)`,
 			},
+			"scopes": {
+				Type:        framework.TypeStringSlice,
+				Description: `If specified, generates a short-lived api token with the provided scopes. NOTE: the backend must be configured with client_secret and client_id for this to work`,
+			},
 		},
 
 		Callbacks: map[logical.Operation]framework.OperationFunc{
@@ -121,6 +125,10 @@ func (b *backend) pathRolesWrite(ctx context.Context, req *logical.Request, d *f
 		roleEntry.Capabilities = capabilities
 	}
 
+	if scopes, ok := d.GetOk("scopes"); ok {
+		roleEntry.Scopes = scopes.([]string)
+	}
+
 	var respData map[string]interface{}
 	marshalledRole, err := json.Marshal(roleEntry)
 	if err != nil {
@@ -167,7 +175,8 @@ func (b *backend) roleRead(ctx context.Context, s logical.Storage, roleName stri
 }
 
 type tailscaleRoleEntry struct {
-	Capabilities tailscale.KeyCapabilities `json:"capabilities"` // JSON-serialized capabilities to attach to tokens.
+	Capabilities tailscale.KeyCapabilities `json:"capabilities,omitempty"` // JSON-serialized capabilities to attach to tokens.
+	Scopes       []string                  `json:"scopes,omitempty"`
 }
 
 func compactJSON(input string) (string, error) {

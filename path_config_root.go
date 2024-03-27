@@ -30,6 +30,10 @@ func pathConfigToken(b *backend) *framework.Path {
 				Type:        framework.TypeString,
 				Description: "Tailscale OAuth Client Secret with the 'devices' scope. Preferred over 'token' if both are specified",
 			},
+			"base_url": {
+				Type:        framework.TypeString,
+				Description: fmt.Sprintf("Base URL to use for tailscale API requests. Defaults to %s", DEFAULT_BASE_URL),
+			},
 		},
 
 		Callbacks: map[logical.Operation]framework.OperationFunc{
@@ -105,6 +109,12 @@ func (b *backend) pathConfigTokenWrite(ctx context.Context, req *logical.Request
 	}
 	conf.Tailnet = tailnet.(string)
 
+	baseURL, baseURLOk := data.GetOk("base_url")
+	if !baseURLOk {
+		baseURL = DEFAULT_BASE_URL
+	}
+	conf.BaseURL = baseURL.(string)
+
 	clientID, clientIDOK := data.GetOk("client_id")
 	clientSecret, clientSecretOK := data.GetOk("client_secret")
 	token, tokenOk := data.GetOk("token")
@@ -153,6 +163,7 @@ type rootTokenConfig struct {
 	Tailnet      string `json:"tailnet,omitempty"`
 	ClientID     string `json:"client_id,omitempty"`
 	ClientSecret string `json:"client_secret,omitempty"`
+	BaseURL      string `json:"base_url,omitempty"`
 }
 
 const pathConfigTokenHelpSyn = `
