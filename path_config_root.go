@@ -109,7 +109,7 @@ func (b *backend) pathConfigTokenWrite(ctx context.Context, req *logical.Request
 	clientSecret, clientSecretOK := data.GetOk("client_secret")
 	token, tokenOk := data.GetOk("token")
 
-	if !clientIDOK || !clientSecretOK || !ok {
+	if (!clientIDOK || !clientSecretOK) && !tokenOk {
 		return logical.ErrorResponse("Must have one of 'client_id' and 'client_secret' or 'token'"), nil
 	}
 	if tokenOk {
@@ -130,7 +130,15 @@ func (b *backend) pathConfigTokenWrite(ctx context.Context, req *logical.Request
 		return nil, err
 	}
 
-	return nil, nil
+	return &logical.Response{
+		Data: map[string]interface{}{
+			"tailnet":       conf.Tailnet,
+			"token":         conf.Token,
+			"client_id":     conf.ClientID,
+			"client_secret": conf.ClientSecret,
+		},
+	}, nil
+
 }
 
 func (b *backend) pathConfigTokenDelete(ctx context.Context, req *logical.Request, data *framework.FieldData) (*logical.Response, error) {

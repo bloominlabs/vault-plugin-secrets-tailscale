@@ -9,17 +9,10 @@ import (
 
 	"github.com/hashicorp/vault/sdk/logical"
 	"github.com/stretchr/testify/assert"
-	"github.com/tailscale/tailscale-client-go/tailscale"
+	"tailscale.com/client/tailscale"
 )
 
 func TestBackend_config_token(t *testing.T) {
-	config := logical.TestBackendConfig()
-	config.StorageView = &logical.InmemStorage{}
-	b, err := Factory(context.Background(), config)
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	testCases := []struct {
 		name                  string
 		configData            *rootTokenConfig
@@ -29,13 +22,13 @@ func TestBackend_config_token(t *testing.T) {
 		{
 			"errorsWithEmptyRequest",
 			nil,
-			map[string]interface{}{"error": "Missing 'token' in configuration request"},
+			map[string]interface{}{"error": "Missing 'tailnet' in configuration request"},
 			map[string]interface{}{"error": "configuration does not exist. did you configure 'config/root'?"},
 		},
 		{
 			"errorsWithEmptyToken",
 			&rootTokenConfig{Tailnet: "test"},
-			map[string]interface{}{"error": "Missing 'token' in configuration request"},
+			map[string]interface{}{"error": "Must have one of 'client_id' and 'client_secret' or 'token'"},
 			map[string]interface{}{"error": "configuration does not exist. did you configure 'config/root'?"},
 		},
 		{
@@ -48,13 +41,22 @@ func TestBackend_config_token(t *testing.T) {
 		{
 			"succeedsWithValidToken",
 			&rootTokenConfig{Token: "test", Tailnet: "test"},
-			nil,
-			map[string]interface{}{"tailnet": "test", "token": "test"},
+			map[string]interface{}{"tailnet": "test", "token": "test", "client_id": "", "client_secret": ""},
+			map[string]interface{}{"tailnet": "test", "token": "test", "client_id": "", "client_secret": ""},
 		},
 	}
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
+			t.Parallel()
+
+			config := logical.TestBackendConfig()
+			config.StorageView = &logical.InmemStorage{}
+			b, err := Factory(context.Background(), config)
+			if err != nil {
+				t.Fatal(err)
+			}
+
 			confReq := &logical.Request{
 				Operation: logical.UpdateOperation,
 				Path:      "config/root",
@@ -113,7 +115,6 @@ func TestBackend_roles(t *testing.T) {
 			"create": map[string]interface{}{
 				"reusable":      false,
 				"ephemeral":     false,
-				"tags":          nil,
 				"preauthorized": false,
 			},
 		},
@@ -202,6 +203,9 @@ func TestBackend_creds_create(t *testing.T) {
 
 	if TAILSCALE_TOKEN == "" {
 		t.Skip("missing 'TEST_CLOUDFLARE_TOKEN'. skipping...")
+	}
+	if TAILSCALE_TAILNET == "" {
+		TAILSCALE_TAILNET = "bloominlabs.com"
 	}
 
 	config := logical.TestBackendConfig()
