@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/tailscale/tailscale-client-go/tailscale"
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
+	"tailscale.com/client/tailscale"
 )
 
 func pathListRoles(b *backend) *framework.Path {
@@ -28,7 +28,7 @@ func pathRoles(b *backend) *framework.Path {
 	return &framework.Path{
 		Pattern: "roles/" + framework.GenericNameWithAtRegex("name"),
 		Fields: map[string]*framework.FieldSchema{
-			"name": &framework.FieldSchema{
+			"name": {
 				Type:        framework.TypeString,
 				Description: "Name of the role",
 				DisplayAttrs: &framework.DisplayAttributes{
@@ -36,11 +36,15 @@ func pathRoles(b *backend) *framework.Path {
 				},
 			},
 
-			"capabilities": &framework.FieldSchema{
+			"capabilities": {
 				Type: framework.TypeString,
 				Description: `Capabilities the API token derived from this role will
         inherit
         (https://github.com/tailscale/tailscale/blob/main/api.md#post-apiv2tailnettailnetkeys---create-a-new-key-for-a-tailnet)`,
+			},
+			"scopes": {
+				Type:        framework.TypeStringSlice,
+				Description: `If specified, generates a short-lived api token with the provided scopes. NOTE: the backend must be configured with client_secret and client_id for this to work`,
 			},
 		},
 
@@ -110,7 +114,7 @@ func (b *backend) pathRolesWrite(ctx context.Context, req *logical.Request, d *f
 	if capabilitiesRaw, ok := d.GetOk("capabilities"); ok {
 		var capabilities tailscale.KeyCapabilities
 		s, ok := d.Get("capabilities").(string)
-		if ok != true {
+		if !ok {
 			return logical.ErrorResponse(fmt.Sprintf("cannot parse capabilities. raw: %q, err: %s", capabilitiesRaw.(string), err)), nil
 		}
 
@@ -119,6 +123,10 @@ func (b *backend) pathRolesWrite(ctx context.Context, req *logical.Request, d *f
 			return logical.ErrorResponse(fmt.Sprintf("cannot parse capabilities. raw: %q, err: %s", capabilitiesRaw.(string), err)), nil
 		}
 		roleEntry.Capabilities = capabilities
+	}
+
+	if scopes, ok := d.GetOk("scopes"); ok {
+		roleEntry.Scopes = scopes.([]string)
 	}
 
 	var respData map[string]interface{}
@@ -167,7 +175,8 @@ func (b *backend) roleRead(ctx context.Context, s logical.Storage, roleName stri
 }
 
 type tailscaleRoleEntry struct {
-	Capabilities tailscale.KeyCapabilities `json:"capabilities"` // JSON-serialized capabilities to attach to tokens.
+	Capabilities tailscale.KeyCapabilities `json:"capabilities,omitempty"` // JSON-serialized capabilities to attach to tokens.
+	Scopes       []string                  `json:"scopes,omitempty"`
 }
 
 func compactJSON(input string) (string, error) {

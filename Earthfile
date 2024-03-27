@@ -1,5 +1,5 @@
-VERSION 0.6
-FROM golang:1.20
+VERSION 0.8
+FROM golang:1.22
 WORKDIR /vault-plugin-secrets-tailscale
 
 deps:

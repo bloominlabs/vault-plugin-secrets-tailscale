@@ -14,7 +14,7 @@ func pathConfigLease(b *backend) *framework.Path {
 	return &framework.Path{
 		Pattern: "config/lease",
 		Fields: map[string]*framework.FieldSchema{
-			"ttl": &framework.FieldSchema{
+			"ttl": {
 				Type:        framework.TypeDurationSecond,
 				Description: "Duration before which the issued token needs renewal",
 			},

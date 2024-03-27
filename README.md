@@ -26,7 +26,8 @@ vault write /tailscale/roles/<role-name> capabilities=-<<EOF
   "devices": {
     "create": {
       "reusable": false,
-      "ephemeral": false
+      "ephemeral": false,
+      "tags": ["tag:vault-server"]
     }
   }
 }
