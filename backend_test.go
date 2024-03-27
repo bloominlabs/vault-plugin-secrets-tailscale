@@ -83,6 +83,7 @@ func TestBackend_config_token(t *testing.T) {
 
 			confReq.Operation = logical.ReadOperation
 			resp, err = b.HandleRequest(context.Background(), confReq)
+			assert.Nil(t, err)
 			assert.Equal(t, testCase.expectedReadResponse, resp.Data)
 		})
 	}
@@ -212,6 +213,9 @@ func TestBackend_creds_create(t *testing.T) {
 
 	var validCapabilties tailscale.KeyCapabilities
 	err = json.Unmarshal([]byte(validPolicy), &validCapabilties)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	testCases := []struct {
 		name               string
@@ -235,7 +239,7 @@ func TestBackend_creds_create(t *testing.T) {
 				Storage:   config.StorageView,
 				Data:      map[string]interface{}{"token": TAILSCALE_TOKEN, "tailnet": TAILSCALE_TAILNET},
 			}
-			resp, err := b.HandleRequest(context.Background(), confReq)
+			_, err := b.HandleRequest(context.Background(), confReq)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -258,7 +262,7 @@ func TestBackend_creds_create(t *testing.T) {
 
 				confReq.Data = inInterface
 			}
-			resp, err = b.HandleRequest(context.Background(), confReq)
+			_, err = b.HandleRequest(context.Background(), confReq)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -269,7 +273,7 @@ func TestBackend_creds_create(t *testing.T) {
 				Storage:   config.StorageView,
 				Data:      testCase.credsData,
 			}
-			resp, err = b.HandleRequest(context.Background(), confReq)
+			resp, err := b.HandleRequest(context.Background(), confReq)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -295,7 +299,7 @@ func TestBackend_creds_create(t *testing.T) {
 				return
 			}
 
-			createdToken, err := c.GetKey(context.TODO(), tokenID)
+			createdToken, err := c.Key(context.TODO(), tokenID)
 			if err != nil {
 				t.Fatalf("failed to get token '%s'. err: %s", tokenID, err)
 			}

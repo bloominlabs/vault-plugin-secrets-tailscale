@@ -10,6 +10,7 @@ require (
 	github.com/hashicorp/vault/sdk v0.11.1
 	github.com/stretchr/testify v1.9.0
 	github.com/tailscale/tailscale-client-go v1.16.0
+	golang.org/x/oauth2 v0.17.0
 	tailscale.com v1.62.0
 )
 
@@ -94,7 +95,6 @@ require (
 	golang.org/x/crypto v0.19.0 // indirect
 	golang.org/x/mod v0.14.0 // indirect
 	golang.org/x/net v0.21.0 // indirect
-	golang.org/x/oauth2 v0.17.0 // indirect
 	golang.org/x/sync v0.6.0 // indirect
 	golang.org/x/sys v0.17.0 // indirect
 	golang.org/x/text v0.14.0 // indirect

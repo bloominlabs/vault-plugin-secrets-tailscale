@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/tailscale/tailscale-client-go/tailscale"
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
+	"github.com/tailscale/tailscale-client-go/tailscale"
 )
 
 const (
@@ -18,15 +18,15 @@ func secretToken(b *backend) *framework.Secret {
 	return &framework.Secret{
 		Type: SecretTokenType,
 		Fields: map[string]*framework.FieldSchema{
-			"token": &framework.FieldSchema{
+			"token": {
 				Type:        framework.TypeString,
 				Description: "tailscale API token",
 			},
-			"id": &framework.FieldSchema{
+			"id": {
 				Type:        framework.TypeString,
 				Description: "ID of the API Token",
 			},
-			"expires": &framework.FieldSchema{
+			"expires": {
 				Type:        framework.TypeString,
 				Description: "Date the token expires",
 			},
@@ -58,7 +58,7 @@ func (b *backend) secretTokenRenew(ctx context.Context, req *logical.Request, d 
 
 	resp := &logical.Response{Secret: req.Secret}
 	resp.Secret.TTL = lease.TTL
-	resp.Secret.MaxTTL = expirationDate.Sub(time.Now())
+	resp.Secret.MaxTTL = time.Until(expirationDate)
 	return resp, nil
 }
 

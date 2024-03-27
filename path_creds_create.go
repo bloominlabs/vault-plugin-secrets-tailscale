@@ -13,7 +13,7 @@ func pathCredsCreate(b *backend) *framework.Path {
 	return &framework.Path{
 		Pattern: "creds/" + framework.GenericNameRegex("role"),
 		Fields: map[string]*framework.FieldSchema{
-			"role": &framework.FieldSchema{
+			"role": {
 				Type:        framework.TypeString,
 				Description: "Create a tailscale token from a Vault role",
 			},
@@ -73,6 +73,6 @@ func (b *backend) pathCredsRead(ctx context.Context, req *logical.Request, d *fr
 		"expires": metadata.Expires,
 	})
 	resp.Secret.TTL = ttl
-	resp.Secret.MaxTTL = metadata.Expires.Sub(time.Now())
+	resp.Secret.MaxTTL = time.Until(metadata.Expires)
 	return resp, nil
 }

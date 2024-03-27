@@ -28,7 +28,7 @@ func pathRoles(b *backend) *framework.Path {
 	return &framework.Path{
 		Pattern: "roles/" + framework.GenericNameWithAtRegex("name"),
 		Fields: map[string]*framework.FieldSchema{
-			"name": &framework.FieldSchema{
+			"name": {
 				Type:        framework.TypeString,
 				Description: "Name of the role",
 				DisplayAttrs: &framework.DisplayAttributes{
@@ -36,7 +36,7 @@ func pathRoles(b *backend) *framework.Path {
 				},
 			},
 
-			"capabilities": &framework.FieldSchema{
+			"capabilities": {
 				Type: framework.TypeString,
 				Description: `Capabilities the API token derived from this role will
         inherit
@@ -110,7 +110,7 @@ func (b *backend) pathRolesWrite(ctx context.Context, req *logical.Request, d *f
 	if capabilitiesRaw, ok := d.GetOk("capabilities"); ok {
 		var capabilities tailscale.KeyCapabilities
 		s, ok := d.Get("capabilities").(string)
-		if ok != true {
+		if !ok {
 			return logical.ErrorResponse(fmt.Sprintf("cannot parse capabilities. raw: %q, err: %s", capabilitiesRaw.(string), err)), nil
 		}
 
