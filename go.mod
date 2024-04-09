@@ -10,7 +10,7 @@ require (
 	github.com/hashicorp/vault/sdk v0.11.1
 	github.com/stretchr/testify v1.9.0
 	github.com/tailscale/tailscale-client-go v1.16.0
-	golang.org/x/oauth2 v0.18.0
+	golang.org/x/oauth2 v0.19.0
 	tailscale.com v1.62.1
 )
 
@@ -101,7 +101,6 @@ require (
 	golang.org/x/time v0.5.0 // indirect
 	golang.org/x/tools v0.17.0 // indirect
 	golang.zx2c4.com/wireguard/windows v0.5.3 // indirect
-	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240102182953-50ed04b92917 // indirect
 	google.golang.org/grpc v1.61.1 // indirect
 	google.golang.org/protobuf v1.32.0 // indirect
