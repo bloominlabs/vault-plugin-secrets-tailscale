@@ -10,7 +10,7 @@ require (
 	github.com/hashicorp/vault/sdk v0.12.0
 	github.com/stretchr/testify v1.9.0
 	github.com/tailscale/tailscale-client-go v1.16.0
-	golang.org/x/oauth2 v0.19.0
+	golang.org/x/oauth2 v0.20.0
 	tailscale.com v1.64.2
 )
 
