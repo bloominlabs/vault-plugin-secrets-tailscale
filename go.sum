@@ -260,8 +260,8 @@ github.com/tailscale/go-winio v0.0.0-20231025203758-c4f33415bf55 h1:Gzfnfk2TWrk8
 github.com/tailscale/go-winio v0.0.0-20231025203758-c4f33415bf55/go.mod h1:4k4QO+dQ3R5FofL+SanAUZe+/QfeK0+OIuwDIRu2vSg=
 github.com/tailscale/hujson v0.0.0-20221223112325-20486734a56a h1:SJy1Pu0eH1C29XwJucQo73FrleVK6t4kYz4NVhp34Yw=
 github.com/tailscale/hujson v0.0.0-20221223112325-20486734a56a/go.mod h1:DFSS3NAGHthKo1gTlmEcSBiZrRJXi28rLNd/1udP1c8=
-github.com/tailscale/tailscale-client-go v1.16.0 h1:mipLVbha5SAVGZT/h3I5qZMrrGXz0iAw4QWXKDfe0l0=
-github.com/tailscale/tailscale-client-go v1.16.0/go.mod h1:v7ssNztaIngJixKoWAgnfhEbzOyRVPI5qT/niBcoI4k=
+github.com/tailscale/tailscale-client-go v1.17.0 h1:4ZTsfB2hiiiIcx7prcXapZHO5K+TXB5fTdhGxdKGR88=
+github.com/tailscale/tailscale-client-go v1.17.0/go.mod h1:Zxz9AWl4cNX8F+jE7iIeo6Me7dGPXNdCFIoVeovH6eI=
 github.com/tv42/httpunix v0.0.0-20150427012821-b75d8614f926/go.mod h1:9ESjWnEqriFuLhtthL60Sar/7RFoluCcXsuvEwTV5KM=
 github.com/x448/float16 v0.8.4 h1:qLwI1I70+NjRFUR3zs1JPUCgaCXSh3SW62uAKT1mSBM=
 github.com/x448/float16 v0.8.4/go.mod h1:14CWIYCyZA/cWjXOioeEpHeN/83MdbZDRQHoFcYsOfg=
