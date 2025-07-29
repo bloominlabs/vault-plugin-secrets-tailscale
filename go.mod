@@ -1,8 +1,6 @@
 module github.com/bloominlabs/vault-plugin-secrets-tailscale
 
-go 1.24.0
-
-toolchain go1.24.1
+go 1.24.4
 
 require (
 	github.com/hashicorp/go-hclog v1.6.3
@@ -11,7 +9,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 	github.com/tailscale/tailscale-client-go v1.17.0
 	golang.org/x/oauth2 v0.30.0
-	tailscale.com v1.84.3
+	tailscale.com v1.86.1
 )
 
 require (
@@ -120,13 +118,13 @@ require (
 	go.uber.org/atomic v1.11.0 // indirect
 	go4.org/mem v0.0.0-20240501181205-ae6ca9944745 // indirect
 	go4.org/netipx v0.0.0-20231129151722-fdeea329fbba // indirect
-	golang.org/x/crypto v0.37.0 // indirect
+	golang.org/x/crypto v0.38.0 // indirect
 	golang.org/x/exp v0.0.0-20250210185358-939b2ce775ac // indirect
-	golang.org/x/net v0.38.0 // indirect
-	golang.org/x/sync v0.13.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
-	golang.org/x/text v0.24.0 // indirect
-	golang.org/x/time v0.10.0 // indirect
+	golang.org/x/net v0.40.0 // indirect
+	golang.org/x/sync v0.14.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.25.0 // indirect
+	golang.org/x/time v0.11.0 // indirect
 	golang.zx2c4.com/wireguard/windows v0.5.3 // indirect
 	google.golang.org/api v0.221.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250207221924-e9438ea467c6 // indirect
