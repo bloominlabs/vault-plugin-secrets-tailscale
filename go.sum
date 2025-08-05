@@ -706,5 +706,5 @@ gvisor.dev/gvisor v0.0.0-20250205023644-9414b50a5633/go.mod h1:5DMfjtclAbTIjbXqO
 honnef.co/go/tools v0.0.0-20190102054323-c2f93a96b099/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 honnef.co/go/tools v0.0.0-20190523083050-ea95bdfd59fc/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 honnef.co/go/tools v0.0.1-2019.2.3/go.mod h1:a3bituU0lyd329TUQxRnasdCoJDkEUEAqEt0JzvZhAg=
-tailscale.com v1.86.1 h1:iRbU/s0Bt91hFep7w71Ga7R8YFzKuxczRGz1QzcuuIg=
-tailscale.com v1.86.1/go.mod h1:Lm8dnzU2i/Emw15r6sl3FRNp/liSQ/nYw6ZSQvIdZ1M=
+tailscale.com v1.86.2 h1:rZyR7vBqpFfQcei+vf69uaJXlJtcLGIub5Sftjs5Tbc=
+tailscale.com v1.86.2/go.mod h1:Lm8dnzU2i/Emw15r6sl3FRNp/liSQ/nYw6ZSQvIdZ1M=
