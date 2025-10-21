@@ -1,6 +1,6 @@
 module github.com/bloominlabs/vault-plugin-secrets-tailscale
 
-go 1.25.1
+go 1.25.3
 
 require (
 	github.com/hashicorp/go-hclog v1.6.3
@@ -9,7 +9,7 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/tailscale/tailscale-client-go v1.17.1
 	golang.org/x/oauth2 v0.32.0
-	tailscale.com v1.88.3
+	tailscale.com v1.90.0
 )
 
 require (
@@ -20,7 +20,6 @@ require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/akutz/memconn v0.1.0 // indirect
-	github.com/alexbrainman/sspi v0.0.0-20231016080023-1a75b4708caa // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
