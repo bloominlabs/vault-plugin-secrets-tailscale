@@ -9,7 +9,7 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/tailscale/tailscale-client-go v1.17.1
 	golang.org/x/oauth2 v0.32.0
-	tailscale.com v1.90.3
+	tailscale.com v1.90.6
 )
 
 require (
