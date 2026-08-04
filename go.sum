@@ -525,5 +525,5 @@ honnef.co/go/tools v0.0.0-20190102054323-c2f93a96b099/go.mod h1:rf3lG4BRIbNafJWh
 honnef.co/go/tools v0.0.0-20190523083050-ea95bdfd59fc/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 pgregory.net/rapid v1.2.0 h1:keKAYRcjm+e1F0oAuU5F5+YPAWcyxNNRK2wud503Gnk=
 pgregory.net/rapid v1.2.0/go.mod h1:PY5XlDGj0+V1FCq0o192FdRhpKHGTRIWBgqjDBTrq04=
-tailscale.com v1.102.0 h1:yAYrykMZWlgp7Qq2ECDrDnxeySWBhNXNMkXdDmVMyrE=
-tailscale.com v1.102.0/go.mod h1:NdndXfkSklVPbRUZMAzzRuDNaR5B+YWGbAyE1HpSQZg=
+tailscale.com v1.102.1 h1:l5ZttM2aHXwcVsMdbQnGuLiAQCvkK8HHy0VI2yHlAys=
+tailscale.com v1.102.1/go.mod h1:ynxKzc9hDxwGLHORQE0qrTH1b8NBRrIsXcnfnug/3dg=
