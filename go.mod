@@ -1,6 +1,6 @@
 module github.com/bloominlabs/vault-plugin-secrets-tailscale
 
-go 1.27.1
+go 1.27.3
 
 require (
 	github.com/hashicorp/go-hclog v1.6.3
@@ -9,7 +9,7 @@ require (
 	github.com/stretchr/testify v1.12.1
 	github.com/tailscale/tailscale-client-go v1.17.1
 	golang.org/x/oauth2 v0.37.0
-	tailscale.com v1.104.1
+	tailscale.com v1.104.2
 )
 
 require (
